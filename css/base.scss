@@ -1,0 +1,220 @@
+@font-face {
+	font-family: 'Menlo Regular';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Menlo Regular'), url('Menlo-Regular.woff') format('woff');
+}
+
+:root {
+	--color-white: white;
+	--color-black: black;
+	--color-navy: navy;
+	--color-green: green;
+	--color-red: red;
+	--color-brown: brown;
+	--color-purple: purple;
+	--color-orange: orange;
+	--color-yellow: yellow;
+	--color-lime: lime;
+	--color-teal: teal;
+	--color-cyan: #009fff;
+	--color-blue: blue;
+	--color-fuchsia: fuchsia;
+	--color-gray: gray;
+	--color-lightgray: lightgray;
+}
+
+html
+{
+	font-size: 16px;
+
+	*
+	{
+		font-family: 'Menlo Regular', monospace;
+		font-size: 1rem;
+		line-height: 1rem;
+	}
+
+	.fa-icon:before
+	{
+		font-family: 'FontAwesome';
+	}
+}
+
+body {
+	background-color: var(--color-black);
+	color: var(--color-lightgray);
+
+	a
+	{
+		color: inherit;
+		text-decoration: none;
+		cursor: pointer;
+	}
+
+	.link
+	{
+		text-align: center;
+
+		> .hover
+		{
+			visibility: hidden;
+		}
+
+		&:hover > .hover
+		{
+			visibility: visible;
+		}
+	}
+
+	input
+	{
+		border: 1px solid var(--color-purple);
+		background: transparent;
+		color: var(--color-fuchsia);
+		font-size: 1rem;
+		padding: .5rem;
+
+		&:hover {
+			border: 1px solid var(--color-fuchsia);
+		}
+
+		&:focus {
+			outline: none;
+			border: 1px solid var(--color-orange);
+		}
+	}
+
+	button
+	{
+		border: 1px solid var(--color-orange);
+		background: var(--color-orange);
+		color: var(--color-black);
+		font-size: 1rem;
+		padding: .5rem;
+
+		&:hover {
+			border: 1px solid var(--color-yellow);
+		}
+
+		&:active {
+			outline: none;
+			background: var(--color-yellow);
+			border: 1px solid var(--color-yellow);
+		}
+
+		&:focus {
+			outline: none;
+			border: 1px solid var(--color-white);
+		}
+	}
+
+	label {
+		color: var(--color-lightgray);
+		font-size: 1rem;
+		line-height: 1rem;
+	}
+}
+
+
+@media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 812px)
+  and (-webkit-min-device-pixel-ratio: 3)
+	and (orientation: portrait)
+{
+	html
+	{
+		font-size: 31px;
+		min-height: calc(31px * 21);
+		min-width: calc(31px * 29);
+		//border: 1px solid #F00;
+
+		pre.rainbow-show,
+	  pre.rainbow-show code,
+	  pre.rainbow-show span
+		{
+			font-size: 16px !important;
+	    line-height: 18px;
+		}
+
+	  pre.rainbow-show
+		{
+			background-size: 100% 58px;
+		}
+	}
+}
+
+@media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 812px)
+  and (-webkit-min-device-pixel-ratio: 3)
+	and (orientation: landscape)
+{
+		html
+		{
+			font-size: 19px;
+			min-height: calc(19px * 21);
+			min-width: calc(19px * 29);
+			//border: 1px solid #F00;
+
+			pre.rainbow-show,
+		  pre.rainbow-show code,
+		  pre.rainbow-show span
+			{
+				font-size: 10px !important;
+		    line-height: 12px;
+			}
+
+		  pre.rainbow-show
+			{
+				background-size: 100% 40px;
+			}
+		}
+}
+
+$col_arr: (
+	"00": "white",
+	"01": "black",
+	"02": "navy",
+	"03": "green",
+	"04": "red",
+	"05": "brown",
+	"06": "purple",
+	"07": "orange",
+	"08": "yellow",
+	"09": "lime",
+	"10": "teal",
+	"11": "cyan",
+	"12": "blue",
+	"13": "fuchsia",
+	"14": "gray",
+	"15": "lightgray");
+
+@each $n, $col in $col_arr {
+  .bg#{$n} { background: var(--color-#{$col}) }
+	.fg#{$n} { color: var(--color-#{$col}) }
+	.bc#{$n} { border-color: var(--color-#{$col}) }
+	.all#{$n}, .all#{$n} > * {
+		border-color: var(--color-#{$col});
+		color: var(--color-#{$col});
+		background: var(--color-#{$col});
+	}
+
+	.h1c#{$n} h1 { color: var(--color-#{$col}) }
+	.h2c#{$n} h2 { color: var(--color-#{$col}) }
+	.h3c#{$n} h3 { color: var(--color-#{$col}) }
+	.ac#{$n} a { color: var(--color-#{$col}) }
+	.sc#{$n} strong { color: var(--color-#{$col}) }
+}
+
+.u { text-decoration: underline; }
+.b, strong { font-weight: bold; }
+.i { font-style: italic; }
+.r {
+	color: initial;
+	background-color: initial;
+	font-weight: normal;
+	font-style: initial;
+	text-decoration: none;
+}

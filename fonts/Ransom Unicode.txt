@@ -1,5 +1,5 @@
 ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
-line_height:1 letter_spacing:0 single_char:1 rand_char:1 case_insensitive:1 space_width:1
+line_height:1 letter_spacing:0 single_char:1 rand_char:1 case_insensitive:1 space_width:1 not_found:char
 A
 𝕒𝒶Ã@卂
 B

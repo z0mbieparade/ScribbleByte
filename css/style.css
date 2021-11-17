@@ -73,7 +73,8 @@ textarea#copy_ascii, #settings#copy_ascii {
   display: none;
 }
 
-#settings.single_char #inputs label[for="font_size"] {
+#settings.single_char #inputs label[for="font_size"],
+#settings.single_char #inputs label[for="not_found"] {
   display: inline-block;
 }
 

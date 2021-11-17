@@ -87,7 +87,8 @@ textarea, #settings
         display: none;
       }
 
-      label[for="font_size"]
+      label[for="font_size"],
+      label[for="not_found"]
       {
         display: inline-block;
       }

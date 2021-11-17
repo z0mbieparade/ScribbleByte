@@ -59,6 +59,16 @@ textarea#copy_ascii, #settings#copy_ascii {
   white-space: nowrap;
 }
 
+#settings.single_char {
+  flex: 0 0 auto !important;
+  height: fit-content;
+  padding-bottom: 1rem;
+}
+
+#settings.single_char #edit_ascii, #settings.single_char #instruct_letters {
+  display: none;
+}
+
 textarea, #edit_ascii {
   padding: 1rem;
 }

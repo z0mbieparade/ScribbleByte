@@ -69,6 +69,17 @@ textarea, #settings
       white-space: nowrap;
     }
   }
+
+  &.single_char
+  {
+    flex: 0 0 auto !important;
+    height: fit-content;
+    padding-bottom: 1rem;
+
+    #edit_ascii, #instruct_letters {
+      display: none;
+    }
+  }
 }
 
 textarea, #edit_ascii {

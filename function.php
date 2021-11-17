@@ -99,7 +99,7 @@ function get_darker_char($char1=' ', $char2=' ')
 
 if (isset($_POST['text']) || $debug)
 {
-  $font = $settings['default_font'];
+  $font = 'Randsom Unicode';//$settings['default_font'];
 
   if($debug && isset($_GET['text'])){
     $text = $_GET['text'];
@@ -130,6 +130,9 @@ if (isset($_POST['text']) || $debug)
       'muck_amount' => null,
       'char_pre' => '', //need this one if the font includes any of the characters in the character string. see Calvin S.
       'not_found' => '', //what to use when a character isn't found, 'char' will use the actual character.
+			'font_size' => null, //default 13
+			'single_char' => null, //if 1, then font is only a single char
+			'rand_char' => null,
 		);
 
     $calc_set = array(
@@ -155,7 +158,10 @@ if (isset($_POST['text']) || $debug)
       'not_found' => isset($_POST['not_found']) ? $_POST['not_found'] : null,
       'letters' => isset($_POST['letters']) ? (int)$_POST['letters'] : null,
 			'letter_settings' => isset($_POST['letter_settings']) ? $_POST['letter_settings'] : null,
-    );
+			'font_size' => null,
+			'single_char' => null,
+			'rand_char' => null,
+		);
 
     $force_set = array(
       //'line_height' => 2,
@@ -278,12 +284,15 @@ if (isset($_POST['text']) || $debug)
       }
     }
 
-    if($use_set['letters'] !== 1 && ($use_set['line_height'] < $calc_set['line_height'] ||
-      $use_set['letter_spacing'] < 0 || $use_set['letter_settings'] !== null))
-    {
-      $string = file_get_contents("combos.json");
-      $combos = json_decode($string, true);
-    }
+		if($use_set['single_char'] === null)
+		{
+	    if($use_set['letters'] !== 1 && ($use_set['line_height'] < $calc_set['line_height'] ||
+	      $use_set['letter_spacing'] < 0 || $use_set['letter_settings'] !== null))
+	    {
+	      $string = file_get_contents("combos.json");
+	      $combos = json_decode($string, true);
+	    }
+		}
 
 		if($debug)
 		{
@@ -358,8 +367,29 @@ if (isset($_POST['text']) || $debug)
         {
 					if($debug) echo $letter . '<br />';
 
-          $letter_width = $letter_arr[$letter][0];
-					$letter_ascii = array_slice($letter_arr[$letter], 1);
+					if($use_set['single_char'] !== null)
+					{
+						$letter_width = 1;
+					}
+					else
+					{
+						$letter_width = $letter_arr[$letter][0];
+					}
+
+					if($use_set['rand_char'])
+					{
+						//$letter_ascii = $letter_arr[$letter][1][rand(0, strlen($letter_arr[$letter][1])-1)];
+						$letters_from = array_slice($letter_arr[$letter], 1);
+						$letters_from = mb_str_split($letters_from[0]);
+						$letter_ascii = array(
+							$letters_from[array_rand($letters_from)]
+						);
+					}
+					else
+					{
+						$letter_ascii = array_slice($letter_arr[$letter], 1);
+					}
+
 					$letter_set[0]['letter_width'] = $letter_width;
 
 					if($debug) echo 'move_current_line_down:' . $move_current_line_down . '<br />';
@@ -568,7 +598,7 @@ if (isset($_POST['text']) || $debug)
         else
         {
 					$letter_set[0]['not_found'] = true;
-					
+
           if($debug)
           {
             echo 'Letter not found: ' . $letter . '<br />';

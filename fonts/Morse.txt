@@ -1,5 +1,5 @@
 ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789()[]{}-.!?,"':;/#*
-case_insensitive:1 char_pre:= not_found:char space_width:3
+case_insensitive:1 char_pre:= not_found:char space_width:3 single_char:1 font_size:2
 
 =A
 .-

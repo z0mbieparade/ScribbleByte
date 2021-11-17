@@ -107,7 +107,7 @@ $settings = $set;
 
 			</div>
 
-			<span class="instruct">Adjust specific letter placement:</span>
+			<span class="instruct" id="instruct_letters">Adjust specific letter placement:</span>
 			<div id="edit_ascii">
 			</div>
 

@@ -99,7 +99,7 @@ function get_darker_char($char1=' ', $char2=' ')
 
 if (isset($_POST['text']) || $debug)
 {
-  $font = 'Big';//$settings['default_font'];
+  $font = $settings['default_font'];
 
   if($debug && isset($_GET['text'])){
     $text = $_GET['text'];

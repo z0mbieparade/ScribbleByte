@@ -25,7 +25,6 @@ $settings = $set;
 <head>
 	<meta charset="UTF-8">
   <title><?php echo $settings['title']; ?></title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
 	<?php
 	  $card = $settings['ScribbleByte_site_path'] . "css/card_img.png";
 	  $url = $settings['ScribbleByte_site_path'];

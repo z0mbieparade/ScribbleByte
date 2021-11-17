@@ -4,7 +4,9 @@ class Combos
   public $quad_combos = array();
   public $border_combos = array();
   public $combos = array();
-
+  public $white_space = array(
+    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+  );
   public $quad_blocks = array(
     '█' => '1234',
     '▛' => '124',
@@ -251,6 +253,56 @@ class Combos
         $this->combos[$border][$block] = $block;
       }
     }
+
+    //make sure all characters cover whitespace
+    foreach($this->combos as $block => $combo_arr)
+    {
+      foreach($this->white_space as $empty_block)
+      {
+        if(!isset($this->combos[$empty_block])) $this->combos[$empty_block] = array();
+
+        $this->combos[$block][$empty_block] = $block;
+        $this->combos[$empty_block][$block] = $block;
+      }
+    }
+  }
+
+  public function get_char_rgb($char)
+  {
+    $img = imagecreatetruecolor(12, 20);
+    $bg = imagecolorallocate($img, 255, 255, 255);
+    $textcolor = imagecolorallocate($img, 0, 0, 0);
+    imagefilledrectangle($img, 0, 0, 20, 20, $bg);
+    imagettftext($img, 15, 0, 0, 15, $textcolor, 'css/Menlo-Regular.ttf', $char);
+
+    $x = imagesx($img);
+    $y = imagesy($img);
+    $tmp_img = ImageCreateTrueColor(1,1);
+    ImageCopyResampled($tmp_img,$img,0,0,0,0,1,1,$x,$y);
+    $rgb = ImageColorAt($tmp_img,0,0);
+    $r   = ($rgb >> 16) & 0xFF;
+    $g = ($rgb >> 8) & 0xFF;
+    $b  =  $rgb & 0xFF;
+
+    var_dump($r, $g, $b);
+
+    ob_start();
+    imagepng($img);
+    $imgData = ob_get_clean();
+    imagedestroy($img);
+    echo '<img style="border:1px solid #F00;" src="data:image/png;base64,'.base64_encode($imgData).'" /><br />';
+
+    return array('r' => $r, 'g' => $g, 'b' => $b);
+  }
+
+  public function get_darker($char1=' ', $char2=' ')
+  {
+    $rgb1 = $this->get_char_rgb($char1);
+    $rgb2 = $this->get_char_rgb($char2);
+
+    if($rgb1['r'] < $rgb2['r']) return $char1;
+    if($rgb1['r'] > $rgb2['r']) return $char2;
+    return $char1;
   }
 
   public function closest_match($input, $match_arr)

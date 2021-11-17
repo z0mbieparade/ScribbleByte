@@ -22,22 +22,21 @@
 	--color-fuchsia: fuchsia;
 	--color-gray: gray;
 	--color-lightgray: lightgray;
+
+	--baseFg: white;
+	--accentBg: gray;
+	--accentFg: teal;
 }
 
 html
 {
-	font-size: 16px;
+	font-size: 12px;
 
 	*
 	{
 		font-family: 'Menlo Regular', monospace;
 		font-size: 1rem;
 		line-height: 1rem;
-	}
-
-	.fa-icon:before
-	{
-		font-family: 'FontAwesome';
 	}
 }
 
@@ -47,41 +46,31 @@ body {
 
 	a
 	{
-		color: inherit;
+	  color: var(--color-orange);
 		text-decoration: none;
 		cursor: pointer;
-	}
 
-	.link
-	{
-		text-align: center;
-
-		> .hover
-		{
-			visibility: hidden;
-		}
-
-		&:hover > .hover
-		{
-			visibility: visible;
-		}
+	  &:hover
+	  {
+	    color: var(--color-yellow);
+	  }
 	}
 
 	input
 	{
-		border: 1px solid var(--color-purple);
+		border: 1px solid var(--color-green);
 		background: transparent;
-		color: var(--color-fuchsia);
+		color: var(--color-lime);
 		font-size: 1rem;
 		padding: .5rem;
 
 		&:hover {
-			border: 1px solid var(--color-fuchsia);
+			border: 1px solid var(--color-lime);
 		}
 
 		&:focus {
 			outline: none;
-			border: 1px solid var(--color-orange);
+			border: 1px solid var(--color-yellow);
 		}
 	}
 
@@ -113,6 +102,33 @@ body {
 		color: var(--color-lightgray);
 		font-size: 1rem;
 		line-height: 1rem;
+	}
+
+	select {
+	  -webkit-appearance: none;
+	  appearance: none;
+	  color: var(--color-lime);
+	  border: 1px solid var(--color-green);
+	  outline: 0;
+	  padding: .5rem 2rem 0.5rem 0.5rem;
+	  border-radius: 0;
+	  background-color: var(--color-green);
+	  background-image: linear-gradient(var(--color-black), var(--color-black)),
+	    linear-gradient(-135deg, transparent 50%, var(--color-black) 50%),
+	    linear-gradient(-225deg, transparent 50%, var(--color-black) 50%),
+	    linear-gradient(var(--color-black) 42%, var(--color-lime) 42%);
+	  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+	  background-size: 1px 100%, 20px 22px, 20px 22px, 20px 100%;
+	  background-position: right 20px center, right bottom, right bottom, right bottom;
+
+		&:hover {
+			border: 1px solid var(--color-lime);
+		  background-image: linear-gradient(var(--color-black), var(--color-black)),
+		    linear-gradient(-135deg, transparent 50%, var(--color-black) 50%),
+		    linear-gradient(-225deg, transparent 50%, var(--color-black) 50%),
+		    linear-gradient(var(--color-black) 42%, var(--color-yellow) 42%);
+			cursor: pointer;
+		}
 	}
 }
 
@@ -157,19 +173,6 @@ body {
 			min-height: calc(19px * 21);
 			min-width: calc(19px * 29);
 			//border: 1px solid #F00;
-
-			pre.rainbow-show,
-		  pre.rainbow-show code,
-		  pre.rainbow-show span
-			{
-				font-size: 10px !important;
-		    line-height: 12px;
-			}
-
-		  pre.rainbow-show
-			{
-				background-size: 100% 40px;
-			}
 		}
 }
 

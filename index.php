@@ -26,10 +26,6 @@ $settings = $set;
 	<meta charset="UTF-8">
   <title><?php echo $settings['title']; ?></title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="apple-touch-icon" sizes="180x180" href="css/favicon_io/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="css/favicon_io/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="css/favicon_io/favicon-16x16.png">
-  <link rel="manifest" href="css/favicon_io/site.webmanifest">
 	<?php
 	  $card = $settings['ScribbleByte_site_path'] . "css/card_img.png";
 	  $url = $settings['ScribbleByte_site_path'];
@@ -63,10 +59,20 @@ $settings = $set;
       let site_url = "<?php echo $settings['ScribbleByte_site_path']; ?>";
     </script>
 
-		<textarea id="for_typing"><?php echo $settings['default_text']; ?></textarea>
+		<div id="top">
+			<div id="info">
+				<p>Just a little app for creating custom ASCII text by <a href="https://z0m.bi" target="_blank">z0m.bi</a></p>
+
+				<p>You can adjust specific letter x,y coordinates by clicking the <span class="fg09">▲ ▼ ◀ ▶</span> you see when hovering over a letter.</p>
+
+			</div>
+			<textarea id="for_typing"><?php echo $settings['default_text']; ?></textarea>
+		</div>
+
 
 		<div id="settings">
 
+			<span class="instruct">Font settings:</span>
 			<div id="inputs">
 				<label for="font">Font:</label>
 				<select id="font">
@@ -91,42 +97,41 @@ $settings = $set;
 					?>
 				</select>
 
-				<label for="letter_spacing">Letter Spacing:</label>
-				<input id="letter_spacing" type="number" value="" style="width:3rem" />
+				<label for="letter_spacing">Letter Spacing: <input id="letter_spacing" type="number" value="" style="width:3rem" /></label>
+				<label for="line_height">Line Height: <input id="line_height" type="number" value="" style="width:3rem" /></label>
+				<label for="space_width">Space Width: <input id="space_width" type="number" value="" style="width:3rem" /></label>
+				<label for="muck_amount">Muck Amount: <input id="muck_amount" type="number" value="" style="width:3rem" /></label>
+				<label for="muck_chars">Muck Chars: <input id="muck_chars" value="" style="width:5rem" /></label>
+				<label for="not_found">Char Not Found: <input id="not_found" value="" style="width:5rem" /></label>
 
-				<label for="line_height">Line Height:</label>
-				<input id="line_height" type="number" value="" style="width:3rem" />
-
-				<label for="space_width">Space Width:</label>
-				<input id="space_width" type="number" value="" style="width:3rem" />
-
-				<label for="muck_amount">Muck Amount:</label>
-				<input id="muck_amount" type="number" value="" style="width:3rem" />
-
-				<label for="muck_chars">Muck Chars:</label>
-				<input id="muck_chars" value="" style="width:5rem" />
-
-				<label for="not_found">Char Not Found:</label>
-				<input id="not_found" value="" style="width:5rem" />
 
 			</div>
 
-			<pre id="letter_string"></pre>
+			<span class="instruct">Adjust specific letter placement:</span>
 			<div id="edit_ascii">
 			</div>
 
 			<div class="letter" id="letter_template" style="display:none">
-				<div class="letter_settings">
-					<span class="char"></span><span class="used_char"></span>
+				<div class="letter_hover">
+					<div class="letter_settings">
+						<span class="char"></span>
+					</div>
+					<div class="adjust_letter">
+						<div class="move_up">▲</div>
+						<div class="move_left">◀</div>
+						<div class="move_right">▶</div>
+						<div class="move_down">▼</div>
+					</div>
 				</div>
+
 				<pre class="letter_ascii"></pre>
 			</div>
 		</div>
 
 		<textarea id="copy_ascii"></textarea>
-
+		<div id="rem_size" style="width:fit-content;height:fit-content;font-size:1rem;padding:0;margin:0;">█</div>
 	  <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-    <script src="script.js"></script>
+    <script src="<?php echo getenv('APP_SITE_PATH') . 'script.js?v=' . $cache; ?>"></script>
     <?php if(isset($settings['include_footer']) && $settings['include_footer'] !== ''){
       include($settings['include_footer']);
     } ?>

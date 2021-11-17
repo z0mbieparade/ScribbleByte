@@ -61,6 +61,42 @@ function muck($str, $amount, $chars)
   }
 }
 
+function get_darker_char($char1=' ', $char2=' ')
+{
+	//char1
+	$img1 = imagecreatetruecolor(12, 20);
+	$bg1 = imagecolorallocate($img1, 255, 255, 255);
+	$textcolor1 = imagecolorallocate($img1, 0, 0, 0);
+	imagefilledrectangle($img1, 0, 0, 20, 20, $bg1);
+	imagettftext($img1, 15, 0, 0, 15, $textcolor1, 'css/Menlo-Regular.ttf', $char1);
+
+	$x1 = imagesx($img1);
+	$y1 = imagesy($img1);
+	$tmp_img1 = ImageCreateTrueColor(1,1);
+	ImageCopyResampled($tmp_img1,$img1,0,0,0,0,1,1,$x1,$y1);
+	$rgb1 = ImageColorAt($tmp_img1,0,0);
+	$r1   = ($rgb1 >> 16) & 0xFF;
+
+	//char2
+	$img2 = imagecreatetruecolor(12, 20);
+	$bg2 = imagecolorallocate($img2, 255, 255, 255);
+	$textcolor2 = imagecolorallocate($img2, 0, 0, 0);
+	imagefilledrectangle($img2, 0, 0, 20, 20, $bg2);
+	imagettftext($img2, 15, 0, 0, 15, $textcolor2, 'css/Menlo-Regular.ttf', $char2);
+
+	$x2 = imagesx($img2);
+	$y2 = imagesy($img2);
+	$tmp_img2 = ImageCreateTrueColor(1,1);
+	ImageCopyResampled($tmp_img2,$img2,0,0,0,0,1,1,$x2,$y2);
+	$rgb2 = ImageColorAt($tmp_img2,0,0);
+	$r2   = ($rgb2 >> 16) & 0xFF;
+
+
+	if($r1 < $r2) return $char1;
+	if($r1 > $r2) return $char2;
+	return $char1;
+}
+
 if (isset($_POST['text']) || $debug)
 {
   $font = $settings['default_font'];
@@ -94,7 +130,7 @@ if (isset($_POST['text']) || $debug)
       'muck_amount' => null,
       'char_pre' => '', //need this one if the font includes any of the characters in the character string. see Calvin S.
       'not_found' => '', //what to use when a character isn't found, 'char' will use the actual character.
-    );
+		);
 
     $calc_set = array(
       'line_height' => 0,
@@ -118,6 +154,7 @@ if (isset($_POST['text']) || $debug)
       'char_pre' => '',
       'not_found' => isset($_POST['not_found']) ? $_POST['not_found'] : null,
       'letters' => isset($_POST['letters']) ? (int)$_POST['letters'] : null,
+			'letter_settings' => isset($_POST['letter_settings']) ? $_POST['letter_settings'] : null,
     );
 
     $force_set = array(
@@ -127,6 +164,14 @@ if (isset($_POST['text']) || $debug)
       //'space_width' => 3,
       //'much_chars' => null,
       //'much_amount' => null,
+			'letter_settings' => array(
+				0 => array( //line
+					3 => array( //letter
+						'x' => 3,
+						'y' => 0
+					),
+				),
+			)
     );
 
     $letter_arr = array();
@@ -234,11 +279,16 @@ if (isset($_POST['text']) || $debug)
     }
 
     if($use_set['letters'] !== 1 && ($use_set['line_height'] < $calc_set['line_height'] ||
-      $use_set['letter_spacing'] < 0))
+      $use_set['letter_spacing'] < 0 || $use_set['letter_settings'] !== null))
     {
       $string = file_get_contents("combos.json");
       $combos = json_decode($string, true);
     }
+
+		if($debug)
+		{
+			print("<pre>use_set:".print_r($use_set,true)."</pre>");
+		}
 
     $ascii_letter_arr = array();
     $letter_current_line = array();
@@ -246,21 +296,24 @@ if (isset($_POST['text']) || $debug)
     $ascii_arr = array();
     $next_line = array();
     $current_line = false;
+		$move_current_line_down = 0;
 
     $max_line_height = $use_set['line_height'] > $calc_set['line_height'] ? $use_set['line_height'] : $calc_set['line_height'];
 
     //split text at linebreaks
     $text_lines = preg_split('/(\r\n|\n|\r)/', $text);
-    foreach($text_lines as $txt)
+    foreach($text_lines as $line_i => $txt)
     {
       $text_arr = str_split($txt);
 
       if($current_line !== false)
       {
-        if($max_line_height > $use_set['line_height'])
-        {
-          $next_line = array_splice($current_line,  $use_set['line_height'] - $max_line_height);
-        }
+				if($debug) echo 'use_set[line_height]:' . $use_set['line_height']  . ' count($current_line):' . count($current_line) . ' move_current_line_down:'.$move_current_line_down.'<br />';
+
+				if(count($current_line) > $use_set['line_height'] + $move_current_line_down)
+				{
+					$next_line = array_splice($current_line,  $use_set['line_height'] - count($current_line) + $move_current_line_down);
+				}
 
         array_push($ascii_arr, $current_line);
         array_push($ascii_letter_arr, $letter_current_line);
@@ -278,29 +331,112 @@ if (isset($_POST['text']) || $debug)
         $current_line[$l] = '';
       }
 
+			//this is for if we want letters to move up, y < 0
+			$move_current_line_down = 0;
+
       //loop thru letters in line
-      foreach ($text_arr as $letter)
+      foreach ($text_arr as $letter_i => $letter)
       {
-        $ascii_current_letter = array(
+        $letter_set = array(
           array(
             'char' => $letter,
             'used_char' => $letter,
             'letter_width' => 0,
-            'letter_spacing' => $use_set['letter_spacing'],
+
             'line_height' => $use_set['line_height'],
+            'letter_spacing' => $use_set['letter_spacing'],
+
+						'x' => isset($use_set['letter_settings'][$line_i][$letter_i]['x']) ? $use_set['letter_settings'][$line_i][$letter_i]['x'] : 0,
+						'y' => isset($use_set['letter_settings'][$line_i][$letter_i]['y']) ? $use_set['letter_settings'][$line_i][$letter_i]['y'] : 0,
           ),
         );
 
+				//move letter right/left
+				$letter_set[0]['letter_spacing'] = $letter_set[0]['letter_spacing'] + $letter_set[0]['x'];
+
         if(isset($letter_arr[$letter]))
         {
-          $letter_width = $letter_arr[$letter][0];
-          $ascii_current_letter[0]['letter_width'] = $letter_width;
+					if($debug) echo $letter . '<br />';
 
+          $letter_width = $letter_arr[$letter][0];
+					$letter_ascii = array_slice($letter_arr[$letter], 1);
+					$letter_set[0]['letter_width'] = $letter_width;
+
+					if($debug) echo 'move_current_line_down:' . $move_current_line_down . '<br />';
+
+					//shift other letters down
+					if($move_current_line_down > 0)
+					{
+						for($i = 0; $i < $move_current_line_down; $i++)
+						{
+							array_unshift($letter_ascii, '');
+						}
+					}
+
+					//move letter down
+					if($letter_set[0]['y'] > 0)
+					{
+						if($debug) echo 'y > 0, move down:' . $letter_set[0]['y'] . '<br />';
+
+						for($i = 0; $i < $letter_set[0]['y']; $i++)
+						{
+							array_unshift($letter_ascii, '');
+						}
+					}
+					else if($letter_set[0]['y'] < 0) //move letter up
+					{
+						if($debug) echo 'y < 0, move up:' . $letter_set[0]['y'] . '<br />';
+
+						$add_to_top = 0;
+						for($i = 0; $i < abs($letter_set[0]['y']); $i++)
+						{
+							//if there's empty space at the top of the letter, remove it
+							if(trim($letter_ascii[$i]) === '')
+							{
+								array_shift($letter_ascii);
+							}
+							else //this is gonna be weird, we will have to move it into previous lines
+							{
+								$add_to_top++;
+							}
+						}
+
+						if($add_to_top > $move_current_line_down)
+						{
+							if($debug) echo 'add_to_top > move_current_line_down:' . $add_to_top . '<br />';
+
+							$move_current_line_down = $add_to_top;
+
+							$str_len = mb_strlen($current_line[0]);
+							for($i = 0; $i < $add_to_top; $i++)
+							{
+								array_unshift($current_line, str_repeat(' ', $str_len));
+							}
+						}
+					}
+
+					$letter_set[0]['move_current_line_down'] = $move_current_line_down;
+
+					//update max line height if letter is taller
+					if(count($letter_ascii) > $max_line_height)
+					{
+						if($debug) echo 'current letter taller than max line height:' . count($letter_ascii) . '<br />';
+
+						$str_len = mb_strlen($current_line[0]);
+						for($i = count($current_line); $i < count($letter_ascii); $i++)
+						{
+							$current_line[$i] = str_repeat(' ', $str_len);
+						}
+
+						$max_line_height = count($letter_ascii);
+					}
+
+					$current_line_width = mb_strlen($current_line[0]);
           for($l = 0; $l < $max_line_height; $l++)
           {
-            if(isset($letter_arr[$letter][$l + 1]))
+            if(isset($letter_ascii[$l]))
             {
-              $line_add = $letter_arr[$letter][$l + 1];
+              $line_add = $letter_ascii[$l];
 
               if(mb_strlen($line_add) < $letter_width)
               {
@@ -312,50 +448,53 @@ if (isset($_POST['text']) || $debug)
               $line_add = str_repeat(' ', $letter_width);
             }
 
-            $ascii_current_letter[] = $line_add;
+            $letter_set[] = $line_add;
+						$space_before = mb_strlen($current_line[$l]) < $current_line_width ? str_repeat(' ', $current_line_width - mb_strlen($current_line[$l])) : '';
 
             //letters don't have negative space, or this is the first letter in the line
-            if($use_set['letter_spacing'] > -1 || mb_strlen($current_line[$l]) === 0)
+            if($letter_set[0]['letter_spacing'] > -1 || mb_strlen($current_line[$l]) === 0)
             {
               $space = '';
-              if($use_set['letter_spacing'] > -1) $space = str_repeat(' ', $use_set['letter_spacing']);
+              if($letter_set[0]['letter_spacing'] > -1) $space = str_repeat(' ', $letter_set[0]['letter_spacing']);
 
-              $current_line[$l] .= muck($line_add . $space, $use_set['muck_amount'], $use_set['muck_chars']);
+              $current_line[$l] .= muck($space_before . $line_add . $space, $use_set['muck_amount'], $use_set['muck_chars']);
             }
             else //letter_spacing < 0
             {
-              $current_line[$l] .= str_repeat(' ', mb_strlen($line_add) + $use_set['letter_spacing']);
+              $current_line[$l] .= str_repeat(' ', mb_strlen($line_add) + $letter_set[0]['letter_spacing']);
               $current_line_arr = mb_str_split($current_line[$l]);
               $line_add_arr = mb_str_split($line_add);
 
               for($ll = 0; $ll < count($line_add_arr); $ll++)
               {
                 $la = count($line_add_arr) - 1 - $ll;
-                $cl = count($current_line_arr) - 1 + $use_set['letter_spacing'] - $ll;
+                $cl = count($current_line_arr) - 1 + $letter_set[0]['letter_spacing'] - $ll;
 
                 if(!isset($line_add_arr[$la])) break;
                 if($cl > -1 && $line_add_arr[$la] !== ' ')
                 {
-                  if($debug &&
-                    $current_line_arr[$cl] !== ' ' &&
-                    $current_line_arr[$cl] !== $line_add_arr[$la] &&
-                    !isset($combos[$current_line_arr[$cl]][$line_add_arr[$la]]))
-                  {
-                    echo 'Combo not found for "' . $current_line_arr[$cl] . '" + "' . $line_add_arr[$la] . '"<br />';
-                  }
-
                   if($current_line_arr[$cl] !== ' ' && isset($combos[$current_line_arr[$cl]][$line_add_arr[$la]]))
                   {
                     $current_line_arr[$cl] = $combos[$current_line_arr[$cl]][$line_add_arr[$la]];
                   }
+									else if($current_line_arr[$cl] === $line_add_arr[$la])
+									{
+										//do nothing, the char doesn't need to be replaced
+									}
                   else
                   {
-                    $current_line_arr[$cl] = $line_add_arr[$la];
+										$darker = get_darker_char($current_line_arr[$cl], $line_add_arr[$la]);
+										if($debug)
+	                  {
+	                    echo '1 Combo not found for "' . $current_line_arr[$cl] . '" + "' . $line_add_arr[$la] . '" using darker "' . $darker . '"<br />';
+	                  }
+
+                    $current_line_arr[$cl] = $darker;
                   }
                 }
               }
 
-              $current_line[$l] = implode('', muck($current_line_arr, $use_set['muck_amount'], $use_set['muck_chars']));
+              $current_line[$l] = $space_before . implode('', muck($current_line_arr, $use_set['muck_amount'], $use_set['muck_chars']));
             }
 
             if(mb_strlen($current_line[$l]) > $calc_set['max_line_width'])
@@ -364,20 +503,25 @@ if (isset($_POST['text']) || $debug)
             }
           }
 
-          $letter_current_line[] = $ascii_current_letter;
+					if($debug)
+					{
+						print("<pre>letter_set:".print_r($letter_set,true)."</pre>");
+					}
+
+          $letter_current_line[] = $letter_set;
         }
         else if($letter === ' ')
         {
           $space = ' ';
-          if($use_set['space_width'] > 0)
+          if($use_set['space_width'] + $letter_set[0]['x'] > 0)
           {
-            $space = str_repeat(' ', $use_set['space_width']);
+            $space = str_repeat(' ', $use_set['space_width'] + $letter_set[0]['x']);
           }
 
           for($l = 0; $l < $max_line_height; $l++)
           {
             $current_line[$l] .= $space;
-            $ascii_current_letter[] = $space;
+            $letter_set[] = $space;
 
             if(mb_strlen($current_line[$l]) > $calc_set['max_line_width'])
             {
@@ -385,10 +529,12 @@ if (isset($_POST['text']) || $debug)
             }
           }
 
-          $letter_current_line[] = $ascii_current_letter;
+          $letter_current_line[] = $letter_set;
         }
         else if($use_set['not_found'] !== '')
         {
+					$letter_set[0]['not_found'] = true;
+
           $space = ' ';
           $nf_char = $use_set['not_found'] === 'char' ? $letter : $use_set['not_found'];
           $nf_line = floor($use_set['line_height'] / 2);
@@ -399,12 +545,12 @@ if (isset($_POST['text']) || $debug)
             $nf_char = str_repeat(' ', floor(($use_set['space_width'] - 1) / 2)) . $nf_char . str_repeat(' ', floor(($use_set['space_width'] - 1) / 2));
           }
 
-          $ascii_current_letter[0]['used_char'] = $nf_char;
+          $letter_set[0]['used_char'] = $nf_char;
 
           for($l = 0; $l < $max_line_height; $l++)
           {
             $current_line[$l] .= ($l == $nf_line ? $nf_char : $space);
-            $ascii_current_letter[] = ($l == $nf_line ? $nf_char : $space);
+            $letter_set[] = ($l == $nf_line ? $nf_char : $space);
 
             if(mb_strlen($current_line[$l]) > $calc_set['max_line_width'])
             {
@@ -417,10 +563,12 @@ if (isset($_POST['text']) || $debug)
             echo 'Letter not found, used not_found: ' . $letter . ' -> "' . $nf_char . '"' . $nf_line . '<br />';
           }
 
-          $letter_current_line[] = $ascii_current_letter;
+          $letter_current_line[] = $letter_set;
         }
         else
         {
+					$letter_set[0]['not_found'] = true;
+					
           if($debug)
           {
             echo 'Letter not found: ' . $letter . '<br />';
@@ -455,14 +603,25 @@ if (isset($_POST['text']) || $debug)
                 }
                 else
                 {
-                  if($debug && $next_line_arr[$l] !== ' ' && !isset($combos[$next_line_arr[$l]][$current_line_arr[$l]]))
-                  {
-                    echo 'Combo not found for "' . $next_line_arr[$l] . '" + "' . $current_line_arr[$l] . '"<br />';
-                  }
+
 
                   if($next_line_arr[$l] !== ' ' && isset($combos[$next_line_arr[$l]][$current_line_arr[$l]]))
                   {
                     $current_line_arr[$l] = $combos[$next_line_arr[$l]][$current_line_arr[$l]];
+                  }
+									else if($next_line_arr[$l] === $current_line_arr[$l])
+									{
+										//do nothing, the char doesn't need to be replaced
+									}
+                  else
+                  {
+										$darker = get_darker_char($next_line_arr[$l], $current_line_arr[$l]);
+										if($debug)
+	                  {
+	                    echo '2 Combo not found for "' . $next_line_arr[$l] . '" + "' . $current_line_arr[$l] . '" using darker "' . $darker . '"<br />';
+	                  }
+
+                    $current_line_arr[$l] = $darker;
                   }
                 }
               }
@@ -476,7 +635,86 @@ if (isset($_POST['text']) || $debug)
           $current_line[$n] = implode('', $current_line_arr);
         }
       }
+
+
+			//we need to move items into previous line
+			if($move_current_line_down > 0 && count($ascii_arr) > 0)
+			{
+				$prev_line = end($ascii_arr);
+				$prev_line_key = key($ascii_arr);
+				$prev_letter_line_key = count($prev_line) - $move_current_line_down;
+
+				$add_to_prev_line = array_splice($current_line, 0, $move_current_line_down);
+
+				if($debug)
+				{
+					print("<pre>move_current_line_down:$move_current_line_down add_to_prev_line:".print_r($add_to_prev_line,true)."</pre>");
+				}
+
+				foreach($add_to_prev_line as $p => $pl)
+	      {
+	        if(isset($ascii_arr[$prev_line_key][$prev_letter_line_key]))
+	        {
+	          $prev_line_arr = mb_str_split($ascii_arr[$prev_line_key][$prev_letter_line_key]);
+	          $add_prev_line_arr = mb_str_split($pl);
+
+	          $line_len = count($prev_line_arr) > count($add_prev_line_arr) ? count($prev_line_arr) : count($add_prev_line_arr);
+
+	          for($l = 0; $l < $line_len; $l++)
+	          {
+	            if(isset($prev_line_arr[$l]))
+	            {
+	              if(isset($add_prev_line_arr[$l]))
+	              {
+	                if($prev_line_arr[$l] === ' ')
+	                {
+	                  $prev_line_arr[$l] = $add_prev_line_arr[$l];
+	                }
+	                else
+	                {
+	                  if($prev_line_arr[$l] !== ' ' && isset($combos[$prev_line_arr[$l]][$add_prev_line_arr[$l]]))
+	                  {
+	                    $prev_line_arr[$l] = $combos[$prev_line_arr[$l]][$add_prev_line_arr[$l]];
+	                  }
+										else if($prev_line_arr[$l] === $add_prev_line_arr[$l])
+										{
+											//do nothing, the char doesn't need to be replaced
+										}
+										else
+										{
+											$darker = get_darker_char($prev_line_arr[$l], $add_prev_line_arr[$l]);
+											if($debug)
+											{
+												echo '3 Combo not found for "' . $prev_line_arr[$l] . '" + "' . $add_prev_line_arr[$l] . '" using darker "' . $darker . '"<br />';
+											}
+
+											$prev_line_arr[$l] = $darker;
+										}
+	                }
+	              }
+	            }
+	            else if(isset($add_prev_line_arr[$l]))
+	            {
+	              $prev_line_arr[$l] = $add_prev_line_arr[$l];
+	            }
+	          }
+
+	          $ascii_arr[$prev_line_key][$prev_letter_line_key] = implode('', $prev_line_arr);
+						$prev_letter_line_key++;
+	        }
+					else
+					{
+						if($debug) echo 'notset ' . $prev_line_key . ' ' . $prev_letter_line_key;
+					}
+	      }
+			}
     }
+
+		//update line height of letters
+		foreach($letter_current_line as $letter)
+		{
+			$letter['line_height'] = count($current_line);
+		}
 
     array_push($ascii_arr, $current_line);
     array_push($ascii_letter_arr, $letter_current_line);
@@ -491,29 +729,52 @@ if (isset($_POST['text']) || $debug)
       $use_set['line_width'] = $calc_set['max_line_width'];
     }
 
+		//delete empty space at end of ascii_arr
+		$last_line = end($ascii_arr);
+		$last_line_key = key($ascii_arr);
+
+		for (end($last_line); ($i=key($last_line))!==null; prev($last_line)){
+		  $l = current($last_line);
+			if(trim($l) === '')
+			{
+				unset($ascii_arr[$last_line_key][$i]);
+			}
+			else
+			{
+				break;
+			}
+		}
+
     if($debug)
     {
-      //print("<pre>".$text."</pre>");
-      //print("<pre>".print_r($text_lines,true)."</pre>");
-      //print("<pre>font:".print_r($font_set,true)."</pre>");
-      //print("<pre>calc:".print_r($calc_set,true)."</pre>");
-      //print("<pre>use:".print_r($use_set,true)."</pre>");
       print("<pre>ascii_arr:".print_r($ascii_arr,true)."</pre>");
 
       foreach($ascii_arr as $line)
       {
         foreach($line as $letter_line)
         {
-          echo '<pre style="margin:-1px 0 -2px">' . $letter_line . '</pre>';
+					if(trim($letter_line) !== '')
+					{
+						echo '<pre style="margin:-1px 0 -2px; padding:0; height:15px;">' . $letter_line . '</pre>';
+					}
         }
       }
     }
     else
     {
-      echo json_encode(array(
-        'settings' => $use_set,
-        'ascii' => $use_set['letters'] === 1 ? $ascii_letter_arr : $ascii_arr,
-      ));
+			if($use_set['letters'] === 1)
+			{
+				echo json_encode(array(
+	        'ascii' => $ascii_letter_arr,
+	      ));
+			}
+			else
+			{
+				echo json_encode(array(
+	        'settings' => $use_set,
+	        'ascii' => $ascii_arr,
+	      ));
+			}
     }
   }
 }

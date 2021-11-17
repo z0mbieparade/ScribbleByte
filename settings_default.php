@@ -7,11 +7,7 @@ $settings = array(
   //ScribbleByte URL ie: http://z0m.bi/apps/ScribbleByte/ (need that last slash)
   'ScribbleByte_site_path' => "http://" . $_SERVER['SERVER_NAME'] . '/ScribbleByte/',
   //default string to use on load
-  'default_text' =>
-    'Sphinx Of Black Quartz, Judge My Vow.'.PHP_EOL.
-    '(pack my box with five dozen liquor jugs?)'.PHP_EOL.
-    'WALTZ, BAD NYMPH, FOR QUICK JIGS VEX!'.PHP_EOL.
-    'pi = 3.1415926535897...',
+  'default_text' => 'Sphinx Of Black Quartz,'.PHP_EOL.'     Judge My Vow.',
   /*'default_text' =>
     'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.PHP_EOL.
     'abcdefghijklmnopqrstuvwxyz'.PHP_EOL.

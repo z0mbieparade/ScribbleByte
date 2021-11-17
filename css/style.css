@@ -6,7 +6,6 @@ body, html {
   margin: 0;
   padding: 0;
   height: 100%;
-  font-size: 14px;
   width: fit-content;
   min-width: 100%;
 }
@@ -16,12 +15,12 @@ textarea, #settings {
   width: 100%;
 }
 
-textarea#for_typing, #settings#for_typing {
-  flex: 1 1 20%;
+textarea#top, #settings#top {
+  flex: 1 1 15%;
 }
 
 textarea#settings, #settings#settings {
-  flex: 1 1 40%;
+  flex: 1 1 45%;
   display: flex;
   flex-direction: column;
   width: fit-content;
@@ -29,6 +28,35 @@ textarea#settings, #settings#settings {
 
 textarea#copy_ascii, #settings#copy_ascii {
   flex: 1 1 40%;
+}
+
+#top {
+  display: flex;
+  flex-direction: row;
+}
+
+#top #info {
+  padding: 43px 1rem 1rem;
+  background: url(title.png) no-repeat top center;
+  background-position: center 1rem;
+  background-size: 200px;
+}
+
+#top #info p {
+  margin: 1rem 0 0;
+}
+
+#settings .instruct {
+  margin: 1rem;
+  color: var(--color-gray);
+}
+
+#settings #inputs {
+  margin: 0 1rem;
+}
+
+#settings #inputs label {
+  white-space: nowrap;
 }
 
 textarea, #edit_ascii {
@@ -39,24 +67,91 @@ textarea, #edit_ascii {
   display: flex;
   flex-direction: column;
   width: fit-content;
-  overflow-y: auto;
 }
 
 #edit_ascii .letter_line {
   flex: 1 1 auto;
   display: flex;
   flex-direction: row;
-  outline: 1px solid rgba(255, 255, 0, 0.2);
   width: fit-content;
 }
 
 #edit_ascii .letter_line .letter {
-  outline: 1px solid rgba(255, 0, 255, 0.3);
+  outline: 1px solid rgba(255, 165, 0, 0.3);
   display: inline-block;
+  position: relative;
 }
 
-#edit_ascii .letter_line .letter pre {
+#edit_ascii .letter_line .letter .letter_hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: .1;
+  min-width: 1.6rem;
+  width: 100%;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#edit_ascii .letter_line .letter .letter_hover .adjust_letter {
+  width: 1.6rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+#edit_ascii .letter_line .letter .letter_hover .adjust_letter div {
+  flex: 1 1 auto;
+  text-align: center;
+  color: var(--color-lime);
+}
+
+#edit_ascii .letter_line .letter .letter_hover .adjust_letter div:hover {
+  opacity: .9;
+  cursor: pointer;
+  color: var(--color-yellow);
+}
+
+#edit_ascii .letter_line .letter .letter_hover .adjust_letter div:active {
+  opacity: 1;
+}
+
+#edit_ascii .letter_line .letter .letter_hover .adjust_letter .move_up, #edit_ascii .letter_line .letter .letter_hover .adjust_letter .move_down {
+  flex: 1 1 100%;
+}
+
+#edit_ascii .letter_line .letter pre.letter_ascii {
   margin: 0;
   padding: 0;
   font-size: 1rem;
+  opacity: .9;
+}
+
+#edit_ascii .letter_line .letter:not(.not_found):hover {
+  z-index: 1;
+}
+
+#edit_ascii .letter_line .letter:not(.not_found):hover .letter_hover {
+  opacity: .9;
+}
+
+#edit_ascii .letter_line .letter:not(.not_found):hover pre.letter_ascii {
+  opacity: .3;
+}
+
+#edit_ascii .letter_line .letter.space_char .move_up, #edit_ascii .letter_line .letter.space_char .move_down {
+  display: none;
+}
+
+#edit_ascii .letter_line .letter.not_found {
+  opacity: .5;
+}
+
+#edit_ascii .letter_line .letter.not_found .letter_hover {
+  display: none;
 }

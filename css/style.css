@@ -69,6 +69,14 @@ textarea#copy_ascii, #settings#copy_ascii {
   display: none;
 }
 
+#settings.single_char #inputs label[for] {
+  display: none;
+}
+
+#settings.single_char #inputs label[for="font_size"] {
+  display: inline-block;
+}
+
 textarea, #edit_ascii {
   padding: 1rem;
 }

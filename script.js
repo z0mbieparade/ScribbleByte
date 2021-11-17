@@ -1,9 +1,11 @@
 var settings = {
   font: $('#font').val(),
   text: $('#for_typing').val(),
+  font_size: 1,
   letter_settings: {}
 };
 
+var typingTimer;
 var rem_size = {};
 
 function update_letter_settings($letter, key, val)
@@ -309,12 +311,14 @@ function update_ascii(update_font)
 
       if(settings.single_char)
       {
-        $('#settings').addClass('single_char');
-        var font_size = settings.font_size ? settings.font_size + 'rem' : 5 + 'rem';
+        settings.font_size = settings.font_size ? settings.font_size : 3;
+        var font_size = settings.font_size ? settings.font_size + 'rem' : 3 + 'rem';
         $('#copy_ascii').css({
-          'font-size': font_size,
-          'line-height': font_size
+          'font-size': settings.font_size + 'rem',
+          'line-height': settings.font_size + 'rem'
         });
+
+        $('#settings').addClass('single_char');
 
         var copy_text = '';
         json.ascii.forEach(function(line)
@@ -332,6 +336,12 @@ function update_ascii(update_font)
       }
       else
       {
+        settings.font_size = settings.font_size ? settings.font_size : 1;
+        $('#copy_ascii').css({
+          'font-size': settings.font_size + 'rem',
+          'line-height': settings.font_size + 'rem'
+        });
+
         $('#settings').removeClass('single_char');
         update_ascii_letters(json, send_data, function()
         {
@@ -370,8 +380,6 @@ function set_settings()
     }
   }
 }
-
-var typingTimer;
 
 $(document).ready(function()
 {

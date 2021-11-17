@@ -97,12 +97,13 @@ $settings = $set;
 					?>
 				</select>
 
-				<label for="letter_spacing">Letter Spacing: <input id="letter_spacing" type="number" value="" style="width:3rem" /></label>
-				<label for="line_height">Line Height: <input id="line_height" type="number" value="" style="width:3rem" /></label>
-				<label for="space_width">Space Width: <input id="space_width" type="number" value="" style="width:3rem" /></label>
-				<label for="muck_amount">Muck Amount: <input id="muck_amount" type="number" value="" style="width:3rem" /></label>
+				<label for="letter_spacing">Letter Spacing: <input id="letter_spacing" type="number" style="width:3rem" /></label>
+				<label for="line_height">Line Height: <input id="line_height" type="number" style="width:3rem" /></label>
+				<label for="space_width">Space Width: <input id="space_width" type="number" style="width:3rem" /></label>
+				<label for="muck_amount">Muck Amount: <input id="muck_amount" type="number" style="width:3rem" /></label>
 				<label for="muck_chars">Muck Chars: <input id="muck_chars" value="" style="width:5rem" /></label>
 				<label for="not_found">Char Not Found: <input id="not_found" value="" style="width:5rem" /></label>
+				<label for="font_size">Font Size: <input id="font_size" type="number" min="0" style="width:3rem" />rem</label>
 
 
 			</div>

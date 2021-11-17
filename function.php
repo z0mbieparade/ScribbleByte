@@ -99,7 +99,7 @@ function get_darker_char($char1=' ', $char2=' ')
 
 if (isset($_POST['text']) || $debug)
 {
-  $font = 'Randsom Unicode';//$settings['default_font'];
+  $font = 'Big';//$settings['default_font'];
 
   if($debug && isset($_GET['text'])){
     $text = $_GET['text'];
@@ -130,7 +130,7 @@ if (isset($_POST['text']) || $debug)
       'muck_amount' => null,
       'char_pre' => '', //need this one if the font includes any of the characters in the character string. see Calvin S.
       'not_found' => '', //what to use when a character isn't found, 'char' will use the actual character.
-			'font_size' => null, //default 13
+			'font_size' => null, //default 1rem
 			'single_char' => null, //if 1, then font is only a single char
 			'rand_char' => null,
 		);
@@ -158,7 +158,7 @@ if (isset($_POST['text']) || $debug)
       'not_found' => isset($_POST['not_found']) ? $_POST['not_found'] : null,
       'letters' => isset($_POST['letters']) ? (int)$_POST['letters'] : null,
 			'letter_settings' => isset($_POST['letter_settings']) ? $_POST['letter_settings'] : null,
-			'font_size' => null,
+			'font_size' => isset($_POST['font_size']) ? $_POST['font_size'] : null,
 			'single_char' => null,
 			'rand_char' => null,
 		);
@@ -212,6 +212,25 @@ if (isset($_POST['text']) || $debug)
           }
         }
       }
+			//this font has a custom space character
+      else if(trim($line) === '(space)' && in_array(' ', $char_arr))
+      {
+        if($calc_line_height > $calc_set['line_height'])
+        {
+          if($debug && isset($font_set['line_height']) && $calc_line_height > $font_set['line_height'])
+          {
+            echo 'Warning: line_height of (space) =' . $calc_line_height . ' which is > than font line_height.<br />';
+          }
+
+          $calc_set['line_height'] = $calc_line_height;
+        }
+        $calc_line_height = 0;
+
+        $current_letter = ' ';
+        $letter_arr[$current_letter] = array(0);
+      }
+			//if the current line is a new character A
+			//and that character is in the list of characters this font uses...
       else if($match_new_char && in_array($new_char_line, $char_arr))
       {
         if($calc_line_height > $calc_set['line_height'])
@@ -228,6 +247,7 @@ if (isset($_POST['text']) || $debug)
         $current_letter = $new_char_line;
         $letter_arr[$current_letter] = array(0);
       }
+			//these are ascii characters to add to the current character
       else if($current_letter !== false)
       {
         $l = preg_replace('/[\n\r]+/', '', $line);
@@ -540,7 +560,7 @@ if (isset($_POST['text']) || $debug)
 
           $letter_current_line[] = $letter_set;
         }
-        else if($letter === ' ')
+        else if($letter === ' ' && !isset($letter_arr[' ']))
         {
           $space = ' ';
           if($use_set['space_width'] + $letter_set[0]['x'] > 0)
@@ -777,6 +797,7 @@ if (isset($_POST['text']) || $debug)
 
     if($debug)
     {
+			//print("<pre>letter_arr:".print_r($letter_arr,true)."</pre>");
       print("<pre>ascii_arr:".print_r($ascii_arr,true)."</pre>");
 
       foreach($ascii_arr as $line)

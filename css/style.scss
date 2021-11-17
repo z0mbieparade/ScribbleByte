@@ -79,6 +79,19 @@ textarea, #settings
     #edit_ascii, #instruct_letters {
       display: none;
     }
+
+    #inputs
+    {
+      label[for]
+      {
+        display: none;
+      }
+
+      label[for="font_size"]
+      {
+        display: inline-block;
+      }
+    }
   }
 }
 

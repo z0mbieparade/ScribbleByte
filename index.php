@@ -48,8 +48,8 @@ $settings = $set;
 	  $cache = rand(0,9999);
 	}
 	?>
-	<link href="<?php echo getenv('APP_SITE_PATH') . 'css/base.css?v=' . $cache; ?>" rel="stylesheet">
-	<link href="<?php echo getenv('APP_SITE_PATH') . 'css/style.css?v=' . $cache; ?>" rel="stylesheet">
+	<link href="<?php echo $settings['ScribbleByte_site_path'] . 'css/base.css?v=' . $cache; ?>" rel="stylesheet">
+	<link href="<?php echo $settings['ScribbleByte_site_path'] . 'css/style.css?v=' . $cache; ?>" rel="stylesheet">
 
   <body>
     <script>
@@ -131,7 +131,7 @@ $settings = $set;
 		<textarea id="copy_ascii"></textarea>
 		<div id="rem_size" style="width:fit-content;height:fit-content;font-size:1rem;padding:0;margin:0;">█</div>
 	  <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-    <script src="<?php echo getenv('APP_SITE_PATH') . 'script.js?v=' . $cache; ?>"></script>
+    <script src="<?php echo $settings['ScribbleByte_site_path'] . 'script.js?v=' . $cache; ?>"></script>
     <?php if(isset($settings['include_footer']) && $settings['include_footer'] !== ''){
       include($settings['include_footer']);
     } ?>

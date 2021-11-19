@@ -87,8 +87,14 @@ textarea, #settings
         display: none;
       }
 
-      label[for="font_size"],
-      label[for="not_found"]
+      label[for="space_width"],
+      label[for="muck_amount"],
+      label[for="zalgo_above"],
+      label[for="zalgo_below"],
+      label[for="zalgo_over"],
+      label[for="zalgo_lative_above"],
+      label[for="not_found"],
+      label[for="font_size"]
       {
         display: inline-block;
       }
@@ -211,5 +217,13 @@ textarea, #edit_ascii {
         }
       }
     }
+  }
+}
+
+body.font-Zalgo
+{
+  #copy_ascii
+  {
+
   }
 }

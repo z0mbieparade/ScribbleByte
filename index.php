@@ -79,7 +79,7 @@ $settings = $set;
 						$fonts = scandir('fonts');
 						foreach($fonts as $font)
 						{
-							if(!preg_match('/.txt$/', $font)) continue;
+							if(!preg_match('/\.(txt)$/', $font)) continue;
 							$arr = explode('.', $font);
 
 							echo '<pre>' . $settings['default_font'] . ' ' . $arr[0] . '</pre>';
@@ -99,11 +99,15 @@ $settings = $set;
 				<label for="letter_spacing">Letter Spacing: <input id="letter_spacing" type="number" style="width:3rem" /></label>
 				<label for="line_height">Line Height: <input id="line_height" type="number" style="width:3rem" /></label>
 				<label for="space_width">Space Width: <input id="space_width" type="number" style="width:3rem" /></label>
-				<label for="muck_amount">Muck Amount: <input id="muck_amount" type="number" style="width:3rem" /></label>
-				<label for="muck_chars">Muck Chars: <input id="muck_chars" value="" style="width:5rem" /></label>
 				<label for="not_found">Char Not Found: <input id="not_found" value="" style="width:5rem" /></label>
 				<label for="font_size">Font Size: <input id="font_size" type="number" min="0" style="width:3rem" />rem</label>
 
+				<label for="muck_amount">Muck Amount: <input id="muck_amount" type="number" style="width:3rem" /></label>
+				<label for="muck_chars">Muck Chars: <input id="muck_chars" value="" style="width:5rem" /></label>
+				<label for="zalgo_above">Zalgo Above: <input id="zalgo_above" type="checkbox" /></label>
+				<label for="zalgo_lative_above">Zalgo Latin Above: <input id="zalgo_lative_above" type="checkbox" /></label>
+				<label for="zalgo_over">Zalgo Over: <input id="zalgo_over" type="checkbox" /></label>
+				<label for="zalgo_below">Zalgo Below: <input id="zalgo_below" type="checkbox" /></label>
 
 			</div>
 

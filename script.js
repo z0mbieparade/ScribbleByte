@@ -1,7 +1,6 @@
 var settings = {
   font: $('#font').val(),
   text: $('#for_typing').val(),
-  font_size: 1,
   letter_settings: {}
 };
 
@@ -127,12 +126,22 @@ function update_ascii_letters(json, send_data, callback)
 
           var append = false;
           var $letter = $('.letter[line_i='+line_i+'][letter_i='+letter_i+']');
+
+          var letter_css = {
+            'margin-right': 0,
+            'margin-left': 0,
+            height: letter[0].line_height + 'rem',
+          };
+
+          if(letter[0].char !== ' ')
+          {
+            letter_css['margin-right'] = (+letter[0].letter_spacing * rem_size.width) + 'px';
+            letter_css['margin-left'] = letter[0].x < 0 ? (letter[0].x * rem_size.width * 2) + 'px' : 0;
+          }
+
           if($letter.length > 0)
           {
-            $letter.css({
-              'margin-right': letter[0].char === ' ' ? 0 : (+letter[0].letter_spacing * rem_size.width) + 'px',
-              height: letter[0].line_height + 'rem'
-            })
+            $letter.css(letter_css)
             .attr('char', letter[0].char)
             .prop('settings', letter[0]);
           }
@@ -141,10 +150,7 @@ function update_ascii_letters(json, send_data, callback)
             append = true;
             var $letter = $('#letter_template').clone();
             $letter.removeAttr('id')
-            .css({
-              'margin-right': letter[0].char === ' ' ? 0 : (+letter[0].letter_spacing * rem_size.width) + 'px',
-              height: letter[0].line_height + 'rem'
-            })
+            .css(letter_css)
             .attr('char', letter[0].char)
             .attr('line_i', line_i)
             .attr('letter_i', letter_i)
@@ -279,6 +285,8 @@ function update_ascii(update_font)
     delete send_data.letters;
   }
 
+  console.log('send_data', send_data);
+
   $.ajax({
     type: "POST",
     url: 'function.php',
@@ -368,17 +376,34 @@ function set_settings()
 {
   for(var key in settings)
   {
-    $('#' + key).val(settings[key]);
+    if($('#' + key).attr('type') === 'checkbox')
+    {
+      $('#' + key).prop('checked', settings[key] ? true : false);
+    }
+    else
+    {
+      $('#' + key).val(settings[key]);
+    }
 
     if(!['font', 'text', 'copy_ascii', 'ascii'].includes(key))
     {
       $('#' + key).off('change').on('change', function()
       {
-        settings[this.id] = $(this).val();
+        if($(this).attr('type') === 'checkbox')
+        {
+          settings[this.id] = $(this).prop('checked') ? 1 : 0;
+        }
+        else
+        {
+          settings[this.id] = $(this).val();
+        }
+
         update_ascii();
       });
     }
   }
+
+  $('body').removeAttr('class').addClass('font-' + settings.font.replace(' ', '_'));
 }
 
 $(document).ready(function()

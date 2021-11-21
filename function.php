@@ -23,7 +23,7 @@ $settings = $set;
 require('inc/class.font.php');
 
 $debug = isset($_GET['debug']) && $_GET['debug'] == 'true' ? true : false;
-$font = isset($_POST['font']) ? $_POST['font'] : 'Zalgo';// $settings['default_font'];
+$font = isset($_POST['font']) ? $_POST['font'] : $settings['default_font'];
 $text = isset($_POST['text']) ? $_POST['text'] : $settings['default_text'];
 
 $make_font = new Font($font, $text, $debug);

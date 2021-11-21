@@ -51,7 +51,6 @@ function update_letter_settings($letter, key, val)
     delete settings.letter_settings[line_i][letter_i][key];
   }
 
-  console.log(key, settings.letter_settings[line_i][letter_i][key]);
   typingTimer = setTimeout(update_ascii, 1000);
 }
 
@@ -74,7 +73,7 @@ function update_ascii_letters(json, send_data, callback)
         var letter_json = {error: e.message};
       }
 
-      console.log('letter_json', letter_json);
+      //console.log('letter_json', letter_json);
 
       if(letter_json.error)
       {
@@ -285,7 +284,7 @@ function update_ascii(update_font)
     delete send_data.letters;
   }
 
-  console.log('send_data', send_data);
+  //console.log('send_data', send_data);
 
   $.ajax({
     type: "POST",
@@ -301,7 +300,7 @@ function update_ascii(update_font)
         var json = {error: e.message};
       }
 
-      console.log('json', json);
+      //console.log('json', json);
 
       if(json.error)
       {

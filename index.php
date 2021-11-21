@@ -41,6 +41,11 @@ $settings = $set;
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:creator" content="@rotterz">
 
+	<link rel="apple-touch-icon" sizes="180x180" href="css/favicon_io/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="css/favicon_io/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="css/favicon_io/favicon-16x16.png">
+	<link rel="manifest" href="css/favicon_io/site.webmanifest">
+
 	<?php
 	$cache = 0;
 	if(getenv('APP_SITE_LIVE') != "true"){

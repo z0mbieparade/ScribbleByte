@@ -146,23 +146,13 @@ class Font
     ),
   );
 
-  private $force_set = array(
-    'letter_settings' => array(
-      0 => array( //line
-        3 => array( //letter
-          'x' => 3,
-          'y' => 0
-        ),
-      ),
-    )
-  );
-
   private $letter_arr = array();
   private $combos = array();
 
   public $font;
   public $text;
   private $debug;
+  private $force_set;
 
   private $zalgo = array(
     'above' => array( //Marks that appear above a letter...
@@ -286,11 +276,12 @@ class Font
     ),
   );
 
-  public function __construct($font='', $text='', $debug=false)
+  public function __construct($font='', $text='', $debug=false, $force_set=array())
   {
     $this->font = $font;
     $this->text = $text;
     $this->debug = $debug;
+    $this->force_set = $force_set;
 
     foreach($this->schema as $key => $schema)
     {
@@ -426,9 +417,9 @@ class Font
   {
     foreach($this->schema as $key => $schema)
     {
-      if($this->debug && isset($force_set[$key]))
+      if($this->debug && isset($this->force_set[$key]))
       {
-        $this->set[$key]['val'] = $force_set[$key];
+        $this->set[$key]['val'] = $this->force_set[$key];
       }
       else if($schema['ui'] === true && isset($_POST[$key]))
       {
@@ -497,8 +488,7 @@ class Font
         ($this->set['line_height']['val'] < $this->set['line_height']['calc'] ||
 	      $this->set['letter_spacing']['val'] < 0))
 	    {
-	      $string = file_get_contents(__DIR__ . "/combos.json");
-	      $this->combos = json_decode($string, true);
+	      $this->load_combos();
 	    }
 		}
     else
@@ -1064,7 +1054,8 @@ class Font
 		$last_line = end($ascii_arr);
 		$last_line_key = key($ascii_arr);
 
-		for (end($last_line); ($i=key($last_line))!==null; prev($last_line)){
+		for (end($last_line); ($i=key($last_line))!==null; prev($last_line))
+    {
 		  $l = current($last_line);
 			if(trim($l) === '')
 			{
@@ -1075,6 +1066,14 @@ class Font
 				break;
 			}
 		}
+
+    foreach($ascii_arr as $line_i => $line)
+    {
+      foreach($line as $letter_line_i => $letter_line)
+      {
+        $ascii_arr[$line_i][$letter_line_i] = $this->zalgo_muck($letter_line, 60);
+      }
+    }
 
     if($this->debug)
     {
@@ -1116,6 +1115,12 @@ class Font
     }
   }
 
+  private function load_combos()
+  {
+    $string = file_get_contents(__DIR__ . "/combos.json");
+    $this->combos = json_decode($string, true);
+  }
+
   public function pre($label='', $arr=array())
   {
     if($this->debug)
@@ -1124,7 +1129,7 @@ class Font
     }
   }
 
-  private function zalgo_muck($str, $max_muck=10)
+  private function zalgo_muck($str, $max_muck=20)
   {
     if($this->set['muck_amount']['val'] === 0 || $this->set['muck_amount']['val'] === null)
     {
@@ -1165,7 +1170,7 @@ class Font
         $muck_type = $muck_types[array_rand($muck_types)];
 
         $add = rand(1, $max_muck);
-        if($add < 5)
+        if(($letter === ' ' && $add === 1) || ($letter !== ' ' && $add < 10))
         {
           $new_letter .= $this->zalgo[$muck_type][array_rand($this->zalgo[$muck_type])]['u'];
         }
@@ -1216,11 +1221,11 @@ class Font
 
     if($return_arr)
     {
-      return $this->zalgo_muck($str_arr, 30);
+      return $str_arr;
     }
     else
     {
-      return implode('', $this->zalgo_muck($str_arr, 30));
+      return implode('', $str_arr);
     }
   }
 

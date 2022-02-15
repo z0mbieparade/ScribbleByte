@@ -324,7 +324,7 @@ class Font
       if($line_num === 0) //font characters
       {
         $chars = trim($line);
-        $char_arr = str_split($chars);
+        $char_arr = mb_str_split($chars);
       }
       if($line_num === 1) //font settings
       {
@@ -532,7 +532,7 @@ class Font
     $text_lines = preg_split('/(\r\n|\n|\r)/', $this->text);
     foreach($text_lines as $line_i => $txt)
     {
-      $text_arr = str_split($txt);
+      $text_arr = mb_str_split($txt);
       $current_line = '';
 
       foreach ($text_arr as $letter_i => $letter)
@@ -620,7 +620,7 @@ class Font
     $text_lines = preg_split('/(\r\n|\n|\r)/', $this->text);
     foreach($text_lines as $line_i => $txt)
     {
-      $text_arr = str_split($txt);
+      $text_arr = mb_str_split($txt);
 
       if($current_line !== false)
       {

@@ -1,5 +1,5 @@
-ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-.!?*&^%$#@[],
-line_height:3 char_pre:- space_width:3
+ABᗺCƆDᗡEƎFGHIJKꓘL⅃MNOPᑫQRЯSTUVWX╳YZaɒbcɔdeɘfgϱh⑁ijkʞlmnopqrstuvwxyz0123456789-.▖|!?*+&^%$#@[]()©,
+line_height:3 char_pre:- space_width:1
 
 -A
 ╔═╗
@@ -9,17 +9,33 @@ line_height:3 char_pre:- space_width:3
 ╔╗
 ╠╩╗
 ╚═╝
+-ᗺ
+ ╔╗
+╔╩╣
+╚═╝
 -C
 ╔═╗
 ║
+╚═╝
+-Ɔ
+╔═╗
+  ║
 ╚═╝
 -D
 ╔╦╗
  ║║
 ═╩╝
+-ᗡ
+╔╦╗
+║║
+╚╩═
 -E
 ╔═╗
 ║╣
+╚═╝
+-Ǝ
+╔═╗
+ ╠║
 ╚═╝
 -F
 ╔═╗
@@ -45,10 +61,18 @@ line_height:3 char_pre:- space_width:3
 ╦╔
 ╠╩╗
 ╩ ╩
+-ꓘ
+ ╗╦
+╔╩╣
+╩ ╩
 -L
 ╦
 ║
 ╩═╝
+-⅃
+  ╦
+  ║
+╚═╩
 -M
 ╔╦╗
 ║║║
@@ -65,6 +89,10 @@ line_height:3 char_pre:- space_width:3
 ╔═╗
 ╠═╝
 ╩
+-ᑫ
+╔═╗
+╚═╣
+  ╩
 -Q
 ╔═╗
 ║═╬╗
@@ -73,6 +101,10 @@ line_height:3 char_pre:- space_width:3
 ╦═╗
 ╠╦╝
 ╩╚═
+-Я
+╔═╦
+╚╦╣
+═╝╩
 -S
 ╔═╗
 ╚═╗
@@ -97,6 +129,10 @@ line_height:3 char_pre:- space_width:3
 ╦  ╦
 ╚╦╦╝
 ╚╝╚╝
+-╳
+╦  ╦
+╚╦╦╝
+╚╝╚╝
 -Y
 ╦ ╦
 ╚╦╝
@@ -109,6 +145,10 @@ line_height:3 char_pre:- space_width:3
 ┌─┐
 ├─┤
 ┴ ┴
+-ɒ
+┌─┐
+├─┤
+┴ ┴
 -b
 ┌┐
 ├┴┐
@@ -116,6 +156,10 @@ line_height:3 char_pre:- space_width:3
 -c
 ┌─┐
 │
+└─┘
+-ɔ
+┌─┐
+  │
 └─┘
 -d
 ┌┬┐
@@ -125,6 +169,10 @@ line_height:3 char_pre:- space_width:3
 ┌─┐
 ├┤
 └─┘
+-ɘ
+┌─┐
+ ├┤
+└─┘
 -f
 ┌─┐
 ├┤
@@ -133,7 +181,15 @@ line_height:3 char_pre:- space_width:3
 ┌─┐
 │ ┬
 └─┘
+-ϱ
+┌─┐
+┬ │
+└─┘
 -h
+┬ ┬
+├─┤
+┴ ┴
+-⑁
 ┬ ┬
 ├─┤
 ┴ ┴
@@ -148,6 +204,10 @@ line_height:3 char_pre:- space_width:3
 -k
 ┬┌
 ├┴┐
+┴ ┴
+-ʞ
+ ┐┬
+┌┴┤
 ┴ ┴
 -l
 ┬
@@ -253,7 +313,15 @@ line_height:3 char_pre:- space_width:3
 
 ───
 
+-|
+╷
+│
+╵
 -.
+
+
+o
+-▖
 
 
 o
@@ -277,13 +345,21 @@ o
 ─┐
  │
 ─┘
+-(
+╭╴
+│
+╰╴
+-)
+╶╮
+ │
+╶╯
 -@
 ┌─┐
 │└┘
 └──
 -#
-─┼─┼─
-─┼─┼─
+┼┼
+┼┼
 -$
 ┌┼┐
 └┼┐
@@ -303,3 +379,11 @@ O┬
 \│/
 ─ ─
 /│\
+-+
+ ╷
+─┼─
+ ╵
+-©
+┌─┐
+│C│
+└─┘
